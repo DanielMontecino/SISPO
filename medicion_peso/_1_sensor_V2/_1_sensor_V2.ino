@@ -19,18 +19,22 @@
  This example code uses bogde's excellent library:  https://github.com/bogde/HX711
 
  bogde's library is released under a GNU GENERAL PUBLIC LICENSE
- Arduino pin 2 -> HX711 CLK
+ Arduino pin 
+ 2 -> HX711 CLK
  3 -> DOUT
  5V -> VCC
  GND -> GND
  Most any pin on the Arduino Uno will be compatible with DOUT/CLK.
  The HX711 board can be powered from 2.7V to 5V so the Arduino 5V power should be fine.
 */
+
+// (clk = 6, dout = 5 --> -85
+// clk = 2, dout = 3 --> -41
 #include "HX711.h"
-#define DOUT  3
-#define CLK  2
-HX711 scale(DOUT, CLK, 32);
-float calibration_factor = -80; //-7050 worked for my 440lb max scale setup
+#define DOUT  5
+#define CLK  6
+HX711 scale(DOUT, CLK);
+float calibration_factor = 145; //-7050 worked for my 440lb max scale setup
 float f = 1;
 boolean change = false;
 void setup() {
@@ -65,11 +69,11 @@ void loop() {
   {
     char temp = Serial.read();
     if(temp == 'a'){
-      calibration_factor += 10;
+      calibration_factor += 1 * f;
       scale.set_scale(calibration_factor); //Adjust to this calibration factor
     }
     else if(temp == 's'){
-      calibration_factor -= 10;
+      calibration_factor -= 1 * f;
       scale.set_scale(calibration_factor); //Adjust to this calibration factor
     }
     else if (temp == '+')

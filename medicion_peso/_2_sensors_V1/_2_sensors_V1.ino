@@ -1,37 +1,49 @@
 #include "HX711.h"
-#define DOUT  3
-#define CLK  2
+
+// (clk = 6, dout = 5 --> -85
+// clk = 2, dout = 3 --> -41
+
+#define DOUT  5
+#define CLK  6
 HX711 scale(DOUT, CLK);
 HX711 scaleB(DOUT, CLK, 32);
-float calibration_factor = -80; //-7050 worked for my 440lb max scale setup
-float calibration_factorB = -80;
+float calibration_factor = -140; //-7050 worked for my 440lb max scale setup
+float calibration_factorB = -28;
 
-float tare, tareB;
+float tare = 0;
+float tareB = 0;;
 boolean change = false;
 float f = 1;
 
-float distance_between_pivots;
+float distance_between_pivots = 5;
 float Afactor = 22400;
 float Bfactor = 22400;
 
+int samples = 5;
+
 void calibrate(){	
-	scaleA.set_scale();
-	scaleA.tare();
-	
+	scale.set_scale();
+	scale.tare();
+	scale.set_scale(calibration_factor);
 	scaleB.set_scale();
 	scaleB.tare();
-	
-	Serial.println("Measure the distance between the pivots and enter it");
-	distance_between_pivots = Serial.read();
-	Serial.println("Measure the distance between the object and the right pivot and enter it");
-	float x = Serial.read();
-	Serial.println(" from the left pivot.");
-	Serial.print("Enter the object's mass: ");
-	float mass = Serial.read();
-	float Fa = scaleA.get_units(5);
-	float Fb = scaleB.get_units(5);
-	Afactor = mass * x / (Fa * distance_between_pivots);
-	Bfactor = (mass + Afactor * Fa) / Fb;
+        scaleB.set_scale(calibration_factorB);
+	Serial.println("Put the object");
+        delay(10000);
+        Serial.println("Continue...");
+	// Serial.println("Measure the distance between the object and the right pivot and enter it");
+	float x = 2.5;
+	//Serial.println(" from the left pivot.");
+	//Serial.print("Enter the object's mass: ");
+	float mass = 1000;
+	float Fa = scale.get_units(samples);
+	float Fb = scaleB.get_units(samples);
+        Serial.print("Forces A and B: ");
+        Serial.print(Fa);
+        Serial.print(" | ");
+        Serial.println(Fb);
+	Afactor = mass * x / (abs(Fa) * distance_between_pivots);
+	Bfactor = (mass + Afactor * abs(Fa)) / abs(Fb);
 	Serial.print("A calibration's factor: ");
 	Serial.println(Afactor);
 	Serial.print("B calibrations' factor: ");
@@ -54,25 +66,31 @@ void setup() {
   Serial.print(zero_factor);
   Serial.print(" -- ");
   Serial.println(scaleB.read_average());
-  tare = scale.get_units(5);
-  tareB = scaleB.get_units(5);
+  tare = scale.get_units(samples);
+  tareB = scaleB.get_units(samples);
   Serial.println();
   Serial.println();
-  calibration()
+  // calibrate();
 }
 void loop() {
   if (change){
-    scale.tare();
-    scaleB.tare();
+    //scale.set_scale();
+    //scaleB.set_scale();
+    //scale.tare();
+    //scaleB.tare();
     scale.set_scale(calibration_factor); //Adjust to this calibration factor
     scaleB.set_scale(calibration_factorB);
-    tare = scale.get_units(5) * 0;
-    tareB = scaleB.get_units(5) * 0;
+    tare = scale.get_units(samples);
+    tareB = scaleB.get_units(samples);
+    Serial.print("Tare setted: ");
+    Serial.print(tare);
+    Serial.print(" | ");
+    Serial.println(tareB);
     change = false;
   }
   
-  float med = scale.get_units(5) - tare;
-  float medB = scaleB.get_units(5) - tareB;
+  float med = (scale.get_units(samples) - tare);
+  float medB = (scaleB.get_units(samples) - tareB);
   Serial.print("Reading: ");
   Serial.print(med, 1);
   Serial.print(" || "); //Change this to kg and re-adjust the calibration factor if you follow SI units like a sane person
