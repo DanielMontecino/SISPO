@@ -95,3 +95,17 @@ void setup() {
   vga.begin();
   vga.copy((byte*)img_pirate_data);
 }
+
+void loop() {
+  static unsigned cnt;
+  if (!(cnt % 10))
+    vga.noTone();
+  if (!(cnt++%20))
+    vga.tone(cnt*10+11);
+  if (cnt>=160)
+    cnt=0;
+  if (cnt>80)
+    vga.copy((byte*)img_guyelaine_data);
+  else
+    vga.copy((byte*)img_pirate_data);
+}
