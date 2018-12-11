@@ -31,10 +31,10 @@
 // (clk = 6, dout = 5 --> -85
 // clk = 2, dout = 3 --> -41
 #include "HX711.h"
-#define DOUT  5
-#define CLK  6
+#define DOUT  A0
+#define CLK  A1
 HX711 scale(DOUT, CLK);
-float calibration_factor = 145; //-7050 worked for my 440lb max scale setup
+float calibration_factor = -120; //-7050 worked for my 440lb max scale setup
 float f = 1;
 boolean change = false;
 void setup() {
