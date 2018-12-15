@@ -3,17 +3,17 @@
 // (clk = 6, dout = 5 --> -85
 // clk = 2, dout = 3 --> -41
 
-#define DOUT_A  9
-#define CLK_A  8
+#define DOUT_A  A4
+#define CLK_A  A5
 
-#define DOUT_B 5
-#define CLK_B 6
+#define DOUT_B 13
+#define CLK_B 12
 
-#define DOUT_C A2 
-#define CLK_C A3
+#define DOUT_C 11
+#define CLK_C 10
 
-#define DOUT_D A0 
-#define CLK_D A1
+#define DOUT_D 5
+#define CLK_D 2
 
 HX711 scaleA(DOUT_A, CLK_A);
 HX711 scaleC(DOUT_C, CLK_C);

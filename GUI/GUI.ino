@@ -1,8 +1,6 @@
 #include <VGAXUtils.h>
 #include <VGAX.h>
 
-#include <VGAX.h>
-
 VGAX vga;
 
 #define BACKGROUND 01  // set the background color
