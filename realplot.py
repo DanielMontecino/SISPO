@@ -3,17 +3,20 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
 import matplotlib.animation as animation
-import time
 import numpy as np
 
 ARDUINO = False
 
 if ARDUINO:
-    arduino = serial.Serial('COM8', 9600)
-    arduino.setDTR(False)
-    time.sleep(1)
-    arduino.flushInput()
-    arduino.setDTR(True)
+    try:
+        for i in range(15):
+            arduino = serial.Serial('COM'+str(i), 9600)
+            arduino.setDTR(False)
+            arduino.flushInput()
+            arduino.setDTR(True)
+            break
+    except serial.serialutil.SerialException:
+            pass
 
 
 fig = plt.figure(figsize=(5,5))
@@ -51,8 +54,6 @@ def animate(i):
         ax1.scatter(points, cincuentas, s = 0.5, c='k', alpha=0.8)
         ax1.scatter(cincuentas, points, s = 0.5, c='k' , alpha=0.8)
         ax1.scatter(x,y, color = color,s = 1000)
-
-
 
     except KeyboardInterrupt:
         print("Exiting")
