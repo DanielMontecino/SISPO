@@ -4,11 +4,14 @@ import matplotlib.animation as animation
 import time
 import numpy as np
 
-arduino = serial.Serial('COM8', 9600)
-arduino.setDTR(False)
-time.sleep(1)
-arduino.flushInput()
-arduino.setDTR(True)
+ARDUINO = False
+
+if ARDUINO:
+    arduino = serial.Serial('COM8', 9600)
+    arduino.setDTR(False)
+    time.sleep(1)
+    arduino.flushInput()
+    arduino.setDTR(True)
 
 
 fig = plt.figure(figsize=(5,5))
@@ -18,18 +21,22 @@ ax1.set_ylim([0, 100])
 points = np.linspace(0,100,200)
 cincuentas = np.ones(200)*50
 radio = 20
+
 def animate(i):
 
     try:
-        rawString = arduino.readline().strip()
-        x = float(rawString.decode('utf-8').split(';')[0])
-        y = float(rawString.decode('utf-8').split(';')[1])
+        if ARDUINO:
+            rawString = arduino.readline().strip()
+            x = float(rawString.decode('utf-8').split(';')[0])
+            y = float(rawString.decode('utf-8').split(';')[1])
+        else:
+            x = 50 + np.random.normal(scale=3)
+            y = 50 + np.random.normal(scale=10)
         if (x-50)**2 + (y-50)**2<= radio**2:
             color = 'b'
         else:
             color = 'r'
-        #x = 50 + np.random.normal(scale=3)
-        #y = 50 + np.random.normal(scale=10)
+
         #print(x,y)
         ax1.clear()
         ax1.set_xlim([0, 100])
