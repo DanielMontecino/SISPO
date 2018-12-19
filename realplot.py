@@ -5,18 +5,18 @@ from matplotlib.pyplot import cm
 import matplotlib.animation as animation
 import numpy as np
 
-ARDUINO = False
+ARDUINO = True
 
 if ARDUINO:
-    try:
-        for i in range(15):
+    for i in range(15):
+        try:
             arduino = serial.Serial('COM'+str(i), 9600)
             arduino.setDTR(False)
             arduino.flushInput()
             arduino.setDTR(True)
             break
-    except serial.serialutil.SerialException:
-            pass
+        except serial.serialutil.SerialException:
+                pass
 
 
 fig = plt.figure(figsize=(5,5))
@@ -68,7 +68,7 @@ fig = plt.figure(figsize=(5,5))
 resolution = np.linspace(0,100,20)
 H, xedges, yedges  = np.histogram2d(X_HIST, Y_HIST, bins=(resolution,resolution), normed =True)
 H = H.T
-ax = fig.add_subplot(111, title='NonUniformImage: interpolated', aspect='equal', xlim=xedges[[0, -1]], ylim=yedges[[0, -1]])
+ax = fig.add_subplot(111, title='Mapa de Calor', aspect='equal', xlim=xedges[[0, -1]], ylim=yedges[[0, -1]])
 im = mpl.image.NonUniformImage(ax, interpolation='bilinear',cmap=cm.Purples)
 xcenters = (xedges[:-1] + xedges[1:]) / 2
 ycenters = (yedges[:-1] + yedges[1:]) / 2
