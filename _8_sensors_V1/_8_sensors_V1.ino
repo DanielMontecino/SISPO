@@ -208,8 +208,9 @@ Serial.println();
     //Serial.print(x);
     //Serial.print(" , ");
     //Serial.println(y);
-    if (norm < 5000){Serial.println(String(50)+String(";")+String(50));}
-    else if (norm > 5000) {Serial.println(String(x)+String(";")+String(y));}
+    if (norm < 10000){Serial.println(String(50)+String(";")+String(50)+String(";")+String(norm));}
+    //else if (norm > 5000) {Serial.println(String(x)+String(";")+String(y));}
+    else if (norm > 10000) {Serial.println(String(x)+String(";")+String(y)+String(";")+String(norm));}
     //Serial.println(String(x)+String(";")+String(y));
     
     //Serial.print(pos((int) x));
